@@ -90,6 +90,7 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
             
             vc.selectedCell = u.getRandomArray()[selectedIndexPath.row]
             vc.cocktailName = selectedCocktail.cocktailName
+            vc.recipe = selectedCocktail.preparation
             vc.cocktailPhoto = images[selectedIndexPath.row]
         }
     }

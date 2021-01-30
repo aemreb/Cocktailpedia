@@ -14,6 +14,7 @@ class DetailsViewController: UIViewController, IngredientsDelegate {
     @IBOutlet weak var cocktailImageView: UIImageView!
     @IBOutlet weak var ingredientsView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var recipeLabel: UILabel!
     
     let u = Utility()
     
@@ -21,6 +22,7 @@ class DetailsViewController: UIViewController, IngredientsDelegate {
     var ingredientsList: String = ""
     var cocktailName: String = ""
     var selectedCell: Int?
+    var recipe: String = "loading..."
     
     
     override func viewDidLoad() {
@@ -33,6 +35,8 @@ class DetailsViewController: UIViewController, IngredientsDelegate {
             cocktailImageView.image = cocktailPhoto
         }
         
+        recipeLabel.text = recipe
+        
         cocktailImageView.layer.cornerRadius = cocktailImageView.frame.height/2
         u.ingredientDelegate = self
         u.downloadCocktailIngredients(index: selectedCell ?? 0, reference: ref, completion: {(result) in
@@ -40,6 +44,13 @@ class DetailsViewController: UIViewController, IngredientsDelegate {
         })
         titleLabel.text = cocktailName ?? "..."
         self.title = cocktailName ?? "..."
+        
+        ingredientsView.layer.shadowColor = UIColor.darkGray.cgColor
+        ingredientsView.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
+        ingredientsView.layer.shadowRadius = 8.0
+        ingredientsView.layer.shadowOpacity = 0.7
+        ingredientsView.layer.cornerRadius = 10.0
+        ingredientsView.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.30)
     }
     
     
