@@ -6,21 +6,35 @@
 //
 
 import UIKit
+import FirebaseStorage
+
 
 private let reuseIdentifier = "Cell"
 
 var cocktailIndexes: [Int] = []
 var cocktails: [String] = []
-var images: [UIImage] = [UIImage()]
+var cocktailObjects: [Cocktail] = []
+var images: [UIImage] = [] 
 
 class CollectionViewController: UICollectionViewController, CocktailsDelegate {
+    @IBOutlet var mainCollectionView: UICollectionView!
     let u = Utility()
 
+   
     override func viewDidLoad() {
         super.viewDidLoad()
+            
         u.delegate = self
-        u.returnCocktailNames()
+        for _ in 0...20{
+            u.getCocktailImages(done: {(image, cocktail) in
+                images.append(image)
+                cocktailObjects.append(cocktail)
+                self.collectionView.reloadData()
+            })
+        }
+        
     }
+    
 
     /*
     // MARK: - Navigation
@@ -41,21 +55,24 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-       
-        return cocktails.count
+        
+        return images.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
    
-        var cell = UICollectionViewCell()
-        if let cocktailCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? CollectionViewCell {
-            cocktailCell.configure(with: cocktails[indexPath.row])
-            cell = cocktailCell
-        }
-    
+        var cell = CollectionViewCell()
         
-    
+        if let cocktailCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? CollectionViewCell {
+        
+            cocktailCell.cocktailCellImageView.image = images[indexPath.row]
+            cocktailCell.cocktailTitle.text = cocktailObjects[indexPath.row].cocktailName
+            cocktailCell.cocktailDuration.text = "10 mins"
+            cocktailCell.configure()
+            cell = cocktailCell
+            
+        }
         return cell
     }
 
@@ -66,10 +83,14 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         if segue.identifier == "detailSegue"{
-            let selectedIndexPath = sender as? NSIndexPath
+            let selectedIndexPath = sender as! NSIndexPath
+            let selectedCocktail = cocktailObjects[selectedIndexPath.row]
             let vc = segue.destination as! DetailsViewController
-            vc.selectedCell = u.getRandomArray()[selectedIndexPath!.row]
-            vc.cocktailName = cocktails[selectedIndexPath!.row]
+            
+            
+            vc.selectedCell = u.getRandomArray()[selectedIndexPath.row]
+            vc.cocktailName = selectedCocktail.cocktailName
+            vc.cocktailPhoto = images[selectedIndexPath.row]
         }
     }
 //    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -122,6 +143,7 @@ extension CollectionViewController{
 //        })
         cocktails = names
 //        images = imageArray
+        
         collectionView?.reloadData()
     }
 }

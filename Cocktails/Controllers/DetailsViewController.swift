@@ -12,18 +12,27 @@ class DetailsViewController: UIViewController, IngredientsDelegate {
 
     @IBOutlet weak var ingredientsLabel: UILabel!
     @IBOutlet weak var cocktailImageView: UIImageView!
+    @IBOutlet weak var ingredientsView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
+    
     let u = Utility()
+    
+    var cocktailPhoto: UIImage?
     var ingredientsList: String = ""
     var cocktailName: String = ""
     var selectedCell: Int?
     
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         var ref: DatabaseReference!
         ref = Database.database().reference()
+
+        if let cocktailPhoto = cocktailPhoto {
+            cocktailImageView.image = cocktailPhoto
+        }
         
-        super.viewDidLoad()
         cocktailImageView.layer.cornerRadius = cocktailImageView.frame.height/2
         u.ingredientDelegate = self
         u.downloadCocktailIngredients(index: selectedCell ?? 0, reference: ref, completion: {(result) in

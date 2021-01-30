@@ -66,9 +66,7 @@ class Utility{
                                         notes: value?["Notes"] as? String ?? "",
                                         preparation: value?["Preparation"] as? String ?? ""
                                     )
-                
-                print(cocktail)
-                
+    
                 
                 
                 
@@ -100,7 +98,9 @@ class Utility{
         }
     }
     
-    func getCocktailImages(completion: @escaping (UIImage) -> ()){
+
+    func getCocktailImages(done: @escaping (UIImage, Cocktail) -> ()){
+        
         
         var image: UIImage?
         
@@ -111,26 +111,47 @@ class Utility{
         let storageRef = storage.reference()
         
         let random = 752 + Int.random(in: 0...400)
-        let picRef = storageRef.child("\(random).jpg")
+        let picRef = storageRef.child("/photos/\(random).jpg")
         
         picRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
             
             if error != nil {
+                print(error!.localizedDescription)
             } else {
                 image = UIImage(data: data!)
-            }
-        }
-        
-        completion: do {
-            if let image = image{
-                completion(image)
-                
+                if let image = image{
+                    var cocktail: Cocktail?
+                    var ref: DatabaseReference!
+                    ref = Database.database().reference()
+                    
+                    let rand = Int.random(in: 0...686)
+                    self.randIndexes.append(rand)
+                    
+                    self.downloadData(index: rand, reference: ref, completion: { (returnCocktail) in
+                        cocktail = returnCocktail
+                        if let cocktail = cocktail{
+                            done(image, cocktail)
+                        }
+                    })
+                    
+                    
+                }
             }
         }
         
         
     }
     
+}
+
+class ReturnType{
+    var image: UIImage!
+    var text: String!
+    
+    init(image: UIImage, text: String){
+        self.image = image
+        self.text = text
+    }
 }
 
 

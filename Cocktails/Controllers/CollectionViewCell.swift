@@ -17,12 +17,7 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var cocktailDuration: UILabel!
     let u = Utility()
     
-    func configure(with cocktailTitleString: String) {
-        if let cocktailTitle = cocktailTitle {
-            cocktailTitle.text = cocktailTitleString
-            cocktailCellImageView.image = #imageLiteral(resourceName: "default_cocktail")
-            cocktailDuration.text = "10 mins"
-        }
+    func configure() {
         
         containerView.layer.shadowColor = UIColor.darkGray.cgColor
         containerView.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
