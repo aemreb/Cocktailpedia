@@ -14,7 +14,8 @@ private let reuseIdentifier = "Cell"
 var cocktailIndexes: [Int] = []
 var cocktails: [String] = []
 var cocktailObjects: [Cocktail] = []
-var images: [UIImage] = [] 
+var images: [UIImage] = []
+var durations: [Int] = []
 
 class CollectionViewController: UICollectionViewController, CocktailsDelegate {
     @IBOutlet var mainCollectionView: UICollectionView!
@@ -29,9 +30,12 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
             u.getCocktailImages(done: {(image, cocktail) in
                 images.append(image)
                 cocktailObjects.append(cocktail)
+                durations.append(Int.random(in: 5...20))
                 self.collectionView.reloadData()
             })
         }
+        
+       
         
     }
     
@@ -68,7 +72,7 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
         
             cocktailCell.cocktailCellImageView.image = images[indexPath.row]
             cocktailCell.cocktailTitle.text = cocktailObjects[indexPath.row].cocktailName
-            cocktailCell.cocktailDuration.text = "10 mins"
+            cocktailCell.cocktailDuration.text = "\(durations[indexPath.row]) mins"
             cocktailCell.configure()
             cell = cocktailCell
             
@@ -92,6 +96,7 @@ class CollectionViewController: UICollectionViewController, CocktailsDelegate {
             vc.cocktailName = selectedCocktail.cocktailName
             vc.recipe = selectedCocktail.preparation
             vc.cocktailPhoto = images[selectedIndexPath.row]
+            vc.duration = durations[selectedIndexPath.row]
         }
     }
 //    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
